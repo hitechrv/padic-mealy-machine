@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P-adic Mealy Machine Calculator</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            text-align: center;
+            margin-bottom: 30px;
+            opacity: 0.8;
+            font-style: italic;
+        }
+        
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .control-group {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .input-section {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .digit-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .digit-input input {
+            width: 50px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        
+        .digit-input button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        
+        .digit-input button:hover {
+            background: #45a049;
+        }
+        
+        .result-section {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .padic-display {
+            font-size: 1.5em;
+            text-align: center;
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .state-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .state-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .explanation {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            line-height: 1.6;
+        }
+        
+        .clear-btn {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .clear-btn:hover {
+            background: #da190b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>P-adic Mealy Machine</h1>
+        <p class="subtitle">Explore p-adic arithmetic through state machine computation</p>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label for="prime">Prime (p):</label>
+                <select id="prime">
+                    <option value="2">2</option>
+                    <option value="3" selected>3</option>
+                    <option value="5">5</option>
+                    <option value="7">7</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="operation">Operation:</label>
+                <select id="operation">
+                    <option value="add">Addition</option>
+                    <option value="multiply">Multiplication</option>
+                    <option value="inverse">Multiplicative Inverse</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="input-section">
+            <h3>Input Digits (rightmost first):</h3>
+            <div class="digit-input">
+                <input type="number" id="digitInput" min="0" placeholder="Enter digit">
+                <button onclick="processDigit()">Process Digit</button>
+                <button class="clear-btn" onclick="clearCalculation()">Clear</button>
+            </div>
+            <p><em>Enter digits from right to left (units, then higher powers of p)</em></p>
+        </div>
+        
+        <div class="result-section">
+            <h3>Current P-adic Representation:</h3>
+            <div class="padic-display" id="padicDisplay">
+                ...000 (empty)
+            </div>
+            <div style="text-align: center; margin-top: 10px; font-size: 0.9em; opacity: 0.8;">
+                <div id="decimalValue"></div>
+            </div>
+            
+            <div class="state-info">
+                <div class="state-box">
+                    <strong>Current State:</strong>
+                    <div id="currentState">INIT</div>
+                </div>
+                <div class="state-box">
+                    <strong>Carry/Memory:</strong>
+                    <div id="carryValue">0</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="explanation">
+            <h3>How it works:</h3>
+            <p>This Mealy machine processes p-adic numbers digit by digit from right to left (least significant first). 
+            Each input digit triggers a state transition and produces an output digit, while maintaining internal state 
+            for carries or intermediate calculations.</p>
+            
+            <p><strong>P-adic numbers</strong> are written "backwards" - the rightmost digit represents the units place, 
+            the next digit represents multiples of p, then p², and so on. The beauty is that every rational number 
+            has a unique p-adic representation (possibly infinite to the left).</p>
+            
+            <p><strong>Important:</strong> When you see a final carry > 0, that represents additional digits extending 
+            infinitely to the left. For example, ...012₃ with carry=1 actually means ...1012₃.</p>
+            
+            <p><strong>Try this:</strong> Set p=3, choose addition, and enter digits 1, 2, 1 (right-to-left) to see how 
+            ...121₃ = 16₁₀ gets doubled to ...1012₃ = 32₁₀. Notice how the final carry=1 represents the leftmost digit!</p>
+        </div>
+    </div>
+
+    <script>
+        class PadicMealyMachine {
+            constructor(prime) {
+                this.p = prime;
+                this.reset();
+            }
+            
+            reset() {
+                this.state = 'INIT';
+                this.carry = 0;
+                this.digits = [];
+                this.operand1 = [];
+                this.operand2 = [];
+                this.inputPhase = 1; // 1 for first operand, 2 for second
+            }
+            
+            processDigit(digit, operation) {
+                if (digit < 0 || digit >= this.p) {
+                    throw new Error(`Digit must be between 0 and ${this.p-1}`);
+                }
+                
+                switch(operation) {
+                    case 'add':
+                        return this.processAddition(digit);
+                    case 'multiply':
+                        return this.processMultiplication(digit);
+                    case 'inverse':
+                        return this.processInverse(digit);
+                    default:
+                        throw new Error('Unknown operation');
+                }
+            }
+            
+            processAddition(digit) {
+                this.operand1.push(digit);
+                
+                // Add the current digit to itself (doubling the p-adic number)
+                let sum = digit + digit + this.carry;
+                let outputDigit = sum % this.p;
+                this.carry = Math.floor(sum / this.p);
+                
+                this.digits.push(outputDigit);
+                this.state = `ADD_${this.digits.length}`;
+                
+                return {
+                    outputDigit,
+                    newState: this.state,
+                    carry: this.carry
+                };
+            }
+            
+            processMultiplication(digit) {
+                this.operand1.push(digit);
+                
+                // Multiply by 2 for demo
+                let product = digit * 2 + this.carry;
+                let outputDigit = product % this.p;
+                this.carry = Math.floor(product / this.p);
+                
+                this.digits.push(outputDigit);
+                this.state = `MUL_${this.digits.length}`;
+                
+                return {
+                    outputDigit,
+                    newState: this.state,
+                    carry: this.carry
+                };
+            }
+            
+            processInverse(digit) {
+                // Simple multiplicative inverse using extended Euclidean algorithm
+                if (digit === 0) {
+                    throw new Error('Cannot find inverse of 0');
+                }
+                
+                this.operand1.push(digit);
+                
+                // Find modular inverse of digit mod p
+                let inv = this.modInverse(digit, this.p);
+                this.digits.push(inv);
+                this.state = `INV_${this.digits.length}`;
+                
+                return {
+                    outputDigit: inv,
+                    newState: this.state,
+                    carry: 0
+                };
+            }
+            
+            modInverse(a, m) {
+                for (let x = 1; x < m; x++) {
+                    if ((a * x) % m === 1) {
+                        return x;
+                    }
+                }
+                return 1;
+            }
+            
+            getPadicRepresentation() {
+                if (this.digits.length === 0) {
+                    return '...000';
+                }
+                
+                let repr = this.digits.slice().reverse().join('');
+                return `...${repr}`;
+            }
+            
+            getDecimalValue() {
+                if (this.digits.length === 0) return 0;
+                
+                let value = 0;
+                for (let i = 0; i < this.digits.length; i++) {
+                    value += this.digits[i] * Math.pow(this.p, i);
+                }
+                return value;
+            }
+        }
+        
+        let machine = new PadicMealyMachine(3);
+        
+        function updatePrime() {
+            const prime = parseInt(document.getElementById('prime').value);
+            machine = new PadicMealyMachine(prime);
+            updateDisplay();
+            
+            // Update digit input max value
+            const digitInput = document.getElementById('digitInput');
+            digitInput.max = prime - 1;
+            digitInput.placeholder = `0-${prime-1}`;
+        }
+        
+        function processDigit() {
+            const digitInput = document.getElementById('digitInput');
+            const digit = parseInt(digitInput.value);
+            const operation = document.getElementById('operation').value;
+            
+            if (isNaN(digit)) {
+                alert('Please enter a valid digit');
+                return;
+            }
+            
+            try {
+                const result = machine.processDigit(digit, operation);
+                updateDisplay();
+                digitInput.value = '';
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+        
+        function clearCalculation() {
+            machine.reset();
+            updateDisplay();
+            document.getElementById('digitInput').value = '';
+        }
+        
+        function updateDisplay() {
+            document.getElementById('padicDisplay').textContent = machine.getPadicRepresentation();
+            document.getElementById('currentState').textContent = machine.state;
+            document.getElementById('carryValue').textContent = machine.carry;
+            
+            const decimalValue = machine.getDecimalValue();
+            if (decimalValue > 0) {
+                document.getElementById('decimalValue').textContent = `Decimal value: ${decimalValue}`;
+            } else {
+                document.getElementById('decimalValue').textContent = '';
+            }
+        }
+        
+        // Event listeners
+        document.getElementById('prime').addEventListener('change', updatePrime);
+        document.getElementById('digitInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                processDigit();
+            }
+        });
+        
+        // Initialize display
+        updatePrime();
+    </script>
+</body>
+</html>
