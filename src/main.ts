@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { TitleScene } from './scenes/TitleScene';
 
 /**
  * Logical resolution the game is designed against. Phaser's Scale.FIT mode
@@ -26,9 +27,7 @@ const config: Phaser.Types.Core.GameConfig = {
     antialias: true,
     pixelArt: false,
   },
-  scene: [
-    // Scenes will be registered here as we build them.
-  ],
+  scene: [TitleScene],
 };
 
 new Phaser.Game(config);
