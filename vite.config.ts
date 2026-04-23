@@ -6,7 +6,7 @@ import { VitePWA } from 'vite-plugin-pwa';
  * that asset URLs resolve correctly in production. Override with BASE_URL env
  * var (e.g. when deploying to a custom domain where the site lives at `/`).
  */
-const BASE = process.env['BASE_URL'] ?? '/padic-mealy-machine/';
+const BASE = process.env.BASE_URL ?? '/padic-mealy-machine/';
 
 export default defineConfig(({ command }) => ({
   base: command === 'build' ? BASE : '/',
@@ -31,7 +31,8 @@ export default defineConfig(({ command }) => ({
       manifest: {
         name: 'Neon Survivors',
         short_name: 'Neon',
-        description: 'An auto-shooter roguelite with a neon-geometric aesthetic.',
+        description:
+          'An auto-shooter roguelite with a neon-geometric aesthetic.',
         theme_color: '#0b0014',
         background_color: '#0b0014',
         display: 'standalone',

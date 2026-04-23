@@ -81,7 +81,7 @@ export class TitleScene extends Phaser.Scene {
     const colors = [Palette.magenta, Palette.cyan, Palette.yellow];
 
     for (let i = 0; i < shapeCount; i++) {
-      const color = colors[i % colors.length]!;
+      const color = colors[i % colors.length];
       const x = Phaser.Math.Between(40, GAME_WIDTH - 40);
       const y = Phaser.Math.Between(40, GAME_HEIGHT * 0.5);
       const size = Phaser.Math.Between(10, 24);
@@ -189,7 +189,6 @@ export class TitleScene extends Phaser.Scene {
   /** Placeholder "start" action until GameScene exists. */
   private flashAndLog(): void {
     this.cameras.main.flash(200, 255, 43, 214);
-    // eslint-disable-next-line no-console
     console.info('[TitleScene] start tapped — GameScene coming soon');
   }
 }
