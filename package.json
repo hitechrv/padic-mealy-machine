@@ -7,14 +7,17 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "generate:pwa-assets": "pwa-assets-generator"
   },
   "dependencies": {
     "phaser": "^3.88.2"
   },
   "devDependencies": {
     "@types/node": "^22.10.7",
+    "@vite-pwa/assets-generator": "^1.0.2",
     "typescript": "^5.7.3",
-    "vite": "^6.0.11"
+    "vite": "^6.0.11",
+    "vite-plugin-pwa": "^1.2.0"
   }
 }

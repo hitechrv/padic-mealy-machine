@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Neon Survivors">
+  <defs>
+    <filter id="glowMagenta" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="10" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="glowCyan" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#12002a"/>
+      <stop offset="100%" stop-color="#0b0014"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="512" height="512" fill="url(#bgGradient)" rx="96"/>
+
+  <!-- Perspective grid below the horizon -->
+  <g stroke="#3a0060" stroke-width="4" opacity="0.9" stroke-linecap="round">
+    <line x1="20" y1="340" x2="492" y2="340"/>
+    <line x1="10" y1="390" x2="502" y2="390"/>
+    <line x1="-10" y1="450" x2="522" y2="450"/>
+  </g>
+  <g stroke="#3a0060" stroke-width="4" opacity="0.9" stroke-linecap="round">
+    <line x1="256" y1="290" x2="60" y2="492"/>
+    <line x1="256" y1="290" x2="160" y2="492"/>
+    <line x1="256" y1="290" x2="256" y2="492"/>
+    <line x1="256" y1="290" x2="352" y2="492"/>
+    <line x1="256" y1="290" x2="452" y2="492"/>
+  </g>
+
+  <!-- Magenta horizon -->
+  <line x1="40" y1="290" x2="472" y2="290"
+        stroke="#ff2bd6" stroke-width="7"
+        filter="url(#glowMagenta)" stroke-linecap="round"/>
+
+  <!-- Cyan player triangle above the horizon -->
+  <polygon points="256,108 340,268 172,268"
+           fill="#00e5ff" filter="url(#glowCyan)"/>
+  <polygon points="256,140 312,252 200,252"
+           fill="#f0f0ff" opacity="0.8"/>
+</svg>
