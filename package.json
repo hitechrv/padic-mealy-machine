@@ -1,0 +1,20 @@
+{
+  "name": "neon-survivors",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "An auto-shooter roguelite PWA with a neon-geometric aesthetic, built with TypeScript + Phaser 3 + Vite.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "phaser": "^3.88.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.11"
+  }
+}
